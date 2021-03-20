@@ -22,7 +22,7 @@
   ],
   "main": "dist/index.js",
   "scripts": {
-    "build": "rm -rf dist && tsc",
+    "build": "rm tsconfig.tsbuildinfo && rm -rf dist && tsc",
     "watch": "npm run build -- --watch",
     "package": "rm -rf action && ncc build --out action --minify --source-map --license licenses.txt"
   },

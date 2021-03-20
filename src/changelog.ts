@@ -28,6 +28,7 @@ export async function generate(
       per_page: 100,
       owner,
       repo,
+      sha: tagRef,
     },
   )) {
     for (const { sha, ...commit } of data) {
