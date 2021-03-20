@@ -16,7 +16,9 @@ async function run() {
       sha,
     } = context;
 
-    info(`target branch = ${ref}`);
+    info(
+      `target ref = ${ref}, branch name = ${ref.substr(ref.lastIndexOf("/"))}`,
+    );
 
     // fetch tags
     const { data: tags } = await octokit.repos.listTags({
@@ -37,8 +39,6 @@ async function run() {
         }
         return 1;
       });
-
-    console.log("tags", versionTags.map((e) => e.name).join(","));
 
     let olderTag;
 
