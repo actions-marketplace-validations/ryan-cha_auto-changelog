@@ -17,7 +17,7 @@ This is a forked version of [ardalanamin/auto-changelog](https://github.com/arda
 ### Example Usage
 
 ```yaml
-uses: ryan-cha/auto-changelog-between-tags@v1.1.4
+uses: ryan-cha/auto-changelog-between-tags@latest
 with:
   token: ${{ secrets.GITHUB_TOKEN }}
   exclude: "perf,other,breaking"
