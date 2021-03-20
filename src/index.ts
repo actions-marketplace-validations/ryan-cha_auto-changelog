@@ -1,6 +1,7 @@
 import { info, getInput, setOutput, setFailed } from "@actions/core";
 import { context, getOctokit } from "@actions/github";
 import { generate } from "./changelog";
+import { gt, lt, eq } from "semver";
 
 const SEMVER_REGEX = /^v([0-9]+)\.([0-9]+)\.([0-9]+)(?:-([0-9A-Za-z-]+(?:\.[0-9A-Za-z-]+)*))?(?:\+[0-9A-Za-z-]+)?$/;
 
@@ -21,11 +22,21 @@ async function run() {
     const { data: tags } = await octokit.repos.listTags({
       owner,
       repo,
-      per_page: 2,
+      per_page: 100,
     });
 
     // filter only version tags
-    const versionTags = tags.filter((t) => SEMVER_REGEX.test(t.name));
+    const versionTags = tags
+      .filter((t) => SEMVER_REGEX.test(t.name))
+      .sort((a, b) => {
+        if (gt(a.name, b.name)) {
+          return -1;
+        }
+        if (eq(a.name, b.name)) {
+          return 0;
+        }
+        return 1;
+      });
 
     let olderTag;
 
