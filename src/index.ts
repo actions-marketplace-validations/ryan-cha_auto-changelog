@@ -35,7 +35,7 @@ async function run() {
     const newerTag = versionTags[0];
 
     info(
-      `${olderTag.name}(${olderTag.commit.sha}) <=  < ${newerTag.name}(${newerTag.commit.sha})`,
+      `${olderTag.name}(${olderTag.commit.sha}) <  <= ${newerTag.name}(${newerTag.commit.sha})`,
     );
 
     const changelog = await generate(

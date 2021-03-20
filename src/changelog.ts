@@ -34,8 +34,9 @@ export async function generate(
     for (const { sha, ...commit } of data) {
       console.log(`looking at sha(${sha}) @ ${commit.commit.committer?.date}`);
       if (sha === tagRef) {
-        console.log("reached final commit! now breaking...");
-        break paginator;
+        console.log("skipping older tag...");
+        // break paginator;
+        continue paginator;
       }
 
       latestCommitDate = maxDate(
