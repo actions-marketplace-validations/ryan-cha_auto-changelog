@@ -2,6 +2,8 @@ import { info, getInput, setOutput, setFailed } from "@actions/core";
 import { context, getOctokit } from "@actions/github";
 import { generate } from "./changelog";
 
+const SEMVER_REGEX = /^v([0-9]+)\.([0-9]+)\.([0-9]+)(?:-([0-9A-Za-z-]+(?:\.[0-9A-Za-z-]+)*))?(?:\+[0-9A-Za-z-]+)?$/;
+
 async function run() {
   try {
     const token = getInput("token", { required: true });
@@ -12,21 +14,34 @@ async function run() {
       sha,
     } = context;
 
+    // fetch tags
     const { data: tags } = await octokit.repos.listTags({
       owner,
       repo,
       per_page: 2,
     });
 
-    let tagRef: string | undefined;
+    // filter only version tags
+    const versionTags = tags.filter((t) => SEMVER_REGEX.test(t.name));
 
-    if (tags.length > 0) {
-      if (sha === tags[0].commit.sha) {
-        if (tags.length > 1) tagRef = tags[1].commit.sha;
-      } else tagRef = tags[0].commit.sha;
+    let olderTag;
+
+    if (versionTags.length > 1) {
+      // exclude the latest(auto-bumped) tag and choose older one
+      olderTag = versionTags[1];
+    } else {
+      olderTag = versionTags[0];
     }
+    const newerTag = versionTags[0];
 
-    const changelog = await generate(octokit, exclude, owner, repo, tagRef);
+    const changelog = await generate(
+      octokit,
+      exclude,
+      owner,
+      repo,
+      olderTag.commit.sha,
+      `${olderTag.name}...${newerTag.name}`,
+    );
 
     info(changelog);
 

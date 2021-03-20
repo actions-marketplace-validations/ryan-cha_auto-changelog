@@ -1,20 +1,20 @@
-name: 'Auto Changelog'
-description: 'Automatic Changelog generator'
-author: 'Ardalan Amini'
+name: "Auto Changelog Between Tags"
+description: "Automatic Changelog generator between the latest two tags"
+author: "Ryan Cha"
 branding:
-  icon: 'clock'
-  color: 'blue'
+  icon: "clock"
+  color: "blue"
 inputs:
   token:
-    description: 'Github token'
+    description: "Github token"
     required: true
   exclude:
-    description: 'Exclude selected commit types (comma separated)'
+    description: "Exclude selected commit types (comma separated)"
     required: false
-    default: ''
+    default: ""
 outputs:
   changelog:
-    description: 'The generated changelogs'
+    description: "The generated changelogs markdown strings"
 runs:
-  using: 'node12'
-  main: 'action/index.js'
+  using: "node12"
+  main: "action/index.js"

@@ -1,21 +1,20 @@
 {
-  "name": "auto-changelog",
-  "version": "1.1.0",
+  "name": "auto-changelog-between-tags",
+  "version": "1.1.1",
   "private": true,
-  "description": "Github Automatic Changelog action",
+  "description": "Github Automatic Changelog action between the latest two tags",
   "author": {
-    "name": "Ardalan Amini",
-    "email": "ardalanamini22@gmail.com",
-    "url": "https://ardalanamini.com"
+    "name": "Ryan Cha",
+    "email": "dev.ryan.cha@gmail.com"
   },
   "license": "MIT",
-  "homepage": "https://github.com/ardalanamini/auto-changelog#readme",
+  "homepage": "https://github.com/ryan-cha/auto-changelog#readme",
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/ardalanamini/auto-changelog.git"
+    "url": "git+https://github.com/ryan-cha/auto-changelog.git"
   },
   "bugs": {
-    "url": "https://github.com/ardalanamini/auto-changelog/issues"
+    "url": "https://github.com/ryan-cha/auto-changelog/issues"
   },
   "keywords": [
     "actions",
@@ -23,17 +22,14 @@
   ],
   "main": "dist/index.js",
   "scripts": {
-    "format": "prettier --write src",
-    "lint": "eslint src",
     "build": "tsc",
     "watch": "npm run build -- --watch",
-    "package": "ncc build --out action --minify --source-map --license licenses.txt",
-    "all": "npm run format && npm run lint && npm run build && npm run package",
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "package": "ncc build --out action --minify --source-map --license licenses.txt"
   },
   "dependencies": {
     "@actions/core": "^1.2.6",
-    "@actions/github": "^4.0.0"
+    "@actions/github": "^4.0.0",
+    "moment": "^2.29.1"
   },
   "devDependencies": {
     "@typescript-eslint/eslint-plugin": "^4.4.1",

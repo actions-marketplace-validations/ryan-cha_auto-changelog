@@ -2,8 +2,8 @@ name: Create Release
 
 on:
   push:
-    tags:
-      - 'v*'
+    branches:
+      - master
 
 jobs:
   build:
@@ -13,11 +13,10 @@ jobs:
       RELEASE: ${{ github.ref }}
     steps:
       - uses: actions/checkout@v2
-      - run: npm ci
-      - run: npm run all
 
       - id: changelog
-        uses: ardalanamini/auto-changelog@master
+        # uses: ardalanamini/auto-changelog@master
+        uses: ./
         with:
           token: ${{ secrets.GITHUB_TOKEN }}
 

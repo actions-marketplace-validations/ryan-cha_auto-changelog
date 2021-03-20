@@ -1,18 +1,26 @@
 import type { GitHub } from "@actions/github/lib/utils";
+import moment from "moment";
+
+const maxDate = (a: string, b: string) => {
+  return a > b ? a : b;
+};
 
 export async function generate(
   octokit: InstanceType<typeof GitHub>,
   exclude: string[],
   owner: string,
   repo: string,
-  tagRef?: string,
+  tagRef: string,
+  compareRange?: string,
 ): Promise<string> {
   exclude = exclude.map(
     (type) => (TYPES as { [type: string]: string | undefined })[type] ?? type,
   );
 
+  const compareUrl = `https://github.com/${owner}/${repo}/compare/${compareRange}`;
   const repoUrl = `https://github.com/${owner}/${repo}`;
   const commits: Logs = {};
+  let latestCommitDate: string | undefined = undefined;
 
   paginator: for await (const { data } of octokit.paginate.iterator(
     octokit.repos.listCommits,
@@ -24,6 +32,14 @@ export async function generate(
   )) {
     for (const { sha, ...commit } of data) {
       if (sha === tagRef) break paginator;
+
+      console.log(
+        `committer date = ${commit.commit.committer?.date}, author date = ${commit.commit.author?.date}`,
+      );
+      latestCommitDate = maxDate(
+        commit.commit.committer?.date ?? "1999-09-09",
+        latestCommitDate ?? "1999-09-09",
+      );
 
       const message = commit.commit.message.split("\n")[0];
 
@@ -58,7 +74,12 @@ export async function generate(
     }
   }
 
-  return Object.values(TYPES)
+  const header = [
+    `## ${moment(latestCommitDate).add(9, "h").format("YYYY-MM-DD Ahh:mm")}`, // UTC -> KST
+    `↔ [Diff full change](${compareUrl})`,
+  ];
+
+  const body = Object.values(TYPES)
     .filter((type) => !exclude.includes(type))
     .sort()
     .reduce((changelog, type) => {
@@ -86,17 +107,16 @@ export async function generate(
           );
         }
       }
-
       changelog.push("");
 
       return changelog;
-    }, [] as string[])
-    .join("\n");
+    }, [] as string[]);
+
+  return header.concat(body).join("\n");
 }
 
 function trim(value: string): string {
   if (value == null) return value;
-
   return value.trim().replace(/ {2,}/g, " ");
 }
 
@@ -104,18 +124,19 @@ const COMMIT_REGEX = /^([^)]*)(?:\(([^)]*?)\)|):(.*?)(?:\[([^\]]+?)\]|)\s*$/;
 const PR_REGEX = /#([1-9]\d*)/g;
 
 const TYPES = {
-  breaking: "Breaking Changes",
+  breaking: "🚨 Breaking Changes",
   build: "Build System / Dependencies",
-  ci: "Continuous Integration",
-  chore: "Chores",
-  docs: "Documentation Changes",
-  feat: "New Features",
-  fix: "Bug Fixes",
+  ci: "🔧 CI/CD",
+  chore: "🗑 Chores",
+  change: "👀 Changes",
+  docs: "📖 Documentation",
+  feat: "💡 New Features",
+  fix: "🐛 Bug Fixes",
   other: "Other Changes",
-  perf: "Performance Improvements",
-  refactor: "Refactors",
+  perf: "🚀 Performance Improvements",
+  refactor: "♻ Refactors",
   revert: "Reverts",
-  style: "Code Style Changes",
+  style: "🎀 Code Style Changes",
   test: "Tests",
 };
 
