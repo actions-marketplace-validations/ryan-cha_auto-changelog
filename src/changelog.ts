@@ -76,7 +76,7 @@ export async function generate(
 
   const header = [
     `## ${moment(latestCommitDate).add(9, "h").format("YYYY-MM-DD Ahh:mm")}`, // UTC -> KST
-    `↔ [Diff full change](${compareUrl})`,
+    `**[Diff Full Change](${compareUrl})**`,
   ];
 
   const body = Object.values(TYPES)

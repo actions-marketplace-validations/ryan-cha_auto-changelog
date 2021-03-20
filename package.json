@@ -1,6 +1,6 @@
 {
   "name": "auto-changelog-between-tags",
-  "version": "1.1.1",
+  "version": "1.1.2",
   "private": true,
   "description": "Github Automatic Changelog action between the latest two tags",
   "author": {
