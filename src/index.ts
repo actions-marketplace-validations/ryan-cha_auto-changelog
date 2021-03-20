@@ -1,7 +1,7 @@
 import { info, getInput, setOutput, setFailed } from "@actions/core";
 import { context, getOctokit } from "@actions/github";
 import { generate } from "./changelog";
-import { gt, lt, eq } from "semver";
+import { gt, eq, prerelease } from "semver";
 
 const SEMVER_REGEX = /^v([0-9]+)\.([0-9]+)\.([0-9]+)(?:-([0-9A-Za-z-]+(?:\.[0-9A-Za-z-]+)*))?(?:\+[0-9A-Za-z-]+)?$/;
 
@@ -13,7 +13,6 @@ async function run() {
     const {
       repo: { owner, repo },
       ref,
-      sha,
     } = context;
 
     info(
@@ -29,9 +28,13 @@ async function run() {
       per_page: 100,
     });
 
+    // is the latest tag for release or prerelease?
+    const isReleaseTag = prerelease(tags[0].name) === null;
+
     // filter only version tags
     const versionTags = tags
-      .filter((t) => SEMVER_REGEX.test(t.name))
+      .filter((t) => SEMVER_REGEX.test(t.name)) // filter only version tag starting with "v"
+      .filter((t) => (isReleaseTag ? prerelease(t.name) === null : t)) // if release, filter only release versions
       .sort((a, b) => {
         if (gt(a.name, b.name)) {
           return -1;
@@ -53,7 +56,7 @@ async function run() {
     const newerTag = versionTags[0];
 
     info(
-      `${olderTag.name}(${olderTag.commit.sha}) <  <= ${newerTag.name}(${newerTag.commit.sha})`,
+      `Composing release for ${olderTag.name}(${olderTag.commit.sha}) < tag <= ${newerTag.name}(${newerTag.commit.sha})`,
     );
 
     const changelog = await generate(

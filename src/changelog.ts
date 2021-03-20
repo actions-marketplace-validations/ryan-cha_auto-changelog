@@ -33,9 +33,9 @@ export async function generate(
     },
   )) {
     for (const { sha, ...commit } of data) {
-      console.log(`looking at sha(${sha}) @ ${commit.commit.committer?.date}`);
+      console.log(`looking at ${sha} @${commit.commit.committer?.date}`);
       if (sha === tagRef) {
-        console.log("skipping older tag...");
+        console.log("reached the end! now finalizing...");
         break paginator;
       }
 
