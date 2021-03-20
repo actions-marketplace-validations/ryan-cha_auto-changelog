@@ -38,6 +38,8 @@ async function run() {
         return 1;
       });
 
+    console.log("tags", versionTags.map((e) => e.name).join(","));
+
     let olderTag;
 
     if (versionTags.length > 1) {
