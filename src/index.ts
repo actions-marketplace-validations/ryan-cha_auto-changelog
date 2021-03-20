@@ -11,8 +11,11 @@ async function run() {
     const octokit = getOctokit(token);
     const {
       repo: { owner, repo },
+      ref,
       sha,
     } = context;
+
+    info(`target branch = ${ref}`);
 
     // fetch tags
     const { data: tags } = await octokit.repos.listTags({
@@ -43,6 +46,7 @@ async function run() {
       exclude,
       owner,
       repo,
+      ref.substr(ref.lastIndexOf("/")),
       olderTag.commit.sha,
       `${olderTag.name}...${newerTag.name}`,
     );

@@ -10,6 +10,7 @@ export async function generate(
   exclude: string[],
   owner: string,
   repo: string,
+  branchRef: string,
   tagRef: string,
   compareRange?: string,
 ): Promise<string> {
@@ -28,7 +29,7 @@ export async function generate(
       per_page: 100,
       owner,
       repo,
-      sha: tagRef,
+      sha: branchRef,
     },
   )) {
     for (const { sha, ...commit } of data) {
