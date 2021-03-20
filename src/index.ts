@@ -17,7 +17,9 @@ async function run() {
     } = context;
 
     info(
-      `target ref = ${ref}, branch name = ${ref.substr(ref.lastIndexOf("/"))}`,
+      `target ref = ${ref}, branch name = ${ref.substr(
+        ref.lastIndexOf("/") + 1,
+      )}`,
     );
 
     // fetch tags
@@ -59,7 +61,7 @@ async function run() {
       exclude,
       owner,
       repo,
-      ref.substr(ref.lastIndexOf("/")),
+      ref.substr(ref.lastIndexOf("/") + 1),
       olderTag.commit.sha,
       `${olderTag.name}...${newerTag.name}`,
     );
