@@ -14,6 +14,15 @@ This is a forked version of [ardalanamin/auto-changelog](https://github.com/arda
   - Added `change` type
   - Added some emoji
 
+### Example Usage
+
+```yaml
+uses: ryan-cha/auto-changelog-between-tags@v1.1.4
+with:
+  token: ${{ secrets.GITHUB_TOKEN }}
+  exclude: "perf,other,breaking"
+```
+
 ---
 
 # + Original README.md
