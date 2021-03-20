@@ -33,9 +33,6 @@ export async function generate(
     for (const { sha, ...commit } of data) {
       if (sha === tagRef) break paginator;
 
-      console.log(
-        `committer date = ${commit.commit.committer?.date}, author date = ${commit.commit.author?.date}`,
-      );
       latestCommitDate = maxDate(
         commit.commit.committer?.date ?? "1999-09-09",
         latestCommitDate ?? "1999-09-09",
