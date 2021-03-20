@@ -27,7 +27,7 @@ async function run() {
     let olderTag;
 
     if (versionTags.length > 1) {
-      // exclude the latest(auto-bumped) tag and choose older one
+      // exclude the latest(auto-bumped) tag and choose older one.
       olderTag = versionTags[1];
     } else {
       olderTag = versionTags[0];
